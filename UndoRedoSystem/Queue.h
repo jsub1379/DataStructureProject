@@ -1,5 +1,8 @@
 #pragma once
-#include <WIndows.h>
+#include "System.h"
+
+#include <iostream>
+#include <Windows.h>
 
 template <typename T>
 class Queue
@@ -17,7 +20,7 @@ public:
 	}
 	bool IsFull()
 	{
-		if ((rear + 1) % dataCount == dataCount)
+		if ((rear + 1) % dataCount == front)
 			return true;
 		else
 			return false;
@@ -25,7 +28,7 @@ public:
 
 	void Enqueue(T inputdata)
 	{
-		if (!IsFull)
+		if (!IsFull())
 		{
 			//모듈러, 원형 큐 구현
 			rear = (rear + 1) % dataCount;
@@ -35,25 +38,38 @@ public:
 		else
 		{
 			MessageBoxA(nullptr, "Queue is full", "Enqueue Error", MB_OK);
-			cout << "enqueue error\n";
+			std::cout << "enqueue error\n";
 		}
 	}
 
-	T Dequeue()
+	bool Dequeue(T& returnData)
 	{
-		if (!IsEmpty)
+		if (!IsEmpty())
 		{
 			front = (front + 1) % dataCount;
-			return data[front];
+			returnData = data[front];
+			return true;
 		}
 		else
 		{
+			//todo:반환값이 없음
 			MessageBoxA(nullptr, "Queue is empty", "dequeue Error", MB_OK);
-			cout << "enqueue error\n";
+			std::cout << "enqueue error\n";
+			return false;
+		}
+
+	}
+
+	void Print()
+	{
+		for (int ix = 0; ix < rear; ix++)
+		{
+			std::cout << data[ix] << " ";
 		}
 	}
+
 private:
 	T data[dataCount] = {};
-	int front = 0;
-	int rear = 0; //마지막 다음 칸
+	int front = 1;//첫번째 칸 비웠으므로 1부터 시작
+	int rear = 1; //마지막 다음 칸
 };

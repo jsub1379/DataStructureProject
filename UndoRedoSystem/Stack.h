@@ -1,6 +1,8 @@
 #pragma once
-#include <Windows.h>
+#include "System.h"
 
+#include <iostream>
+#include <Windows.h>
 template <typename T>
 
 class Stack
@@ -33,27 +35,36 @@ public:
 		}
 		else
 		{
-			MessageBoxA(nullptr, "Stack is full", "Push error", MB_OK)
-			cout << "push error\n";
+			MessageBoxA(nullptr, "Stack is full", "Push error", MB_OK);
+			std::cout << "push error\n";
 		}
 
 	}
 
-	T Pop()
+	bool Pop(T& returnData)
 	{
 		if (!IsEmpty()) 
 		{
-			return data[count];
 			--count;
+			returnData = data[count];
+			return true;
 		}
 		else
 		{
-			MessageBoxA(nullptr, "Stack is empty", "Pop error", MB_OK)
-			cout << "pop error\n";
-			return -1;
+			//todo:여기도 반환값 오류
+			MessageBoxA(nullptr, "Stack is empty", "Pop error", MB_OK);
+			std::cout << "pop error\n";
+			return false;
 		}
 	}
 
+	void Print()
+	{
+		for (int ix = 0; ix < count; ix++)
+		{
+			std::cout << data[ix] << " ";
+		}
+	}
 
 private:
 	T data[dataCount] = { };
