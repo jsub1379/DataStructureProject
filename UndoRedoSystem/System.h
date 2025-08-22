@@ -73,9 +73,10 @@ template <typename T> class Stack;
 const int dataCount = 6;//0번 칸은 항상 비우므로 원하는 크기 +1
 
 bool mainMenu(Queue<ICommand*>& queue, Stack<ICommand*>& undoStack, Stack<ICommand*>& redoStack);
-void input(Queue<ICommand*>& queue, Stack<ICommand*>& undoStack);
+void input(Queue<ICommand*>& queue, Stack<ICommand*>& undoStack, Stack<ICommand*>& redoStack);
 void undo(Stack<ICommand*>& undoStack, Stack<ICommand*>& redoStack);
 void redo(Stack<ICommand*>& undoStack, Stack<ICommand*>& redoStack);
 void show(Stack<ICommand*>& undoStack, Stack<ICommand*>& redoStack);
+void clear(Queue<ICommand*>& queue, Stack<ICommand*>& undoStack, Stack<ICommand*>& redoStack);
 
 ICommand* makeCommand(char command);

@@ -13,7 +13,7 @@ bool mainMenu(Queue<ICommand*>& queue, Stack<ICommand*>& undoStack, Stack<IComma
     std::cin >> selectedMenu;
 
     if (selectedMenu == 'i') {
-        input(queue, undoStack);
+        input(queue, undoStack, redoStack);
         return false;
     }
     else if (selectedMenu == 'u')
@@ -37,9 +37,8 @@ bool mainMenu(Queue<ICommand*>& queue, Stack<ICommand*>& undoStack, Stack<IComma
     }
 }
 
-//todo: 만약 중간에 새로 입력한 경우는?
 
-void input(Queue<ICommand*>& queue, Stack<ICommand*>& undoStack)
+void input(Queue<ICommand*>& queue, Stack<ICommand*>& undoStack,Stack<ICommand*>& redoStack)
 {
     char input[100];
     std::cin >> input;
@@ -51,21 +50,32 @@ void input(Queue<ICommand*>& queue, Stack<ICommand*>& undoStack)
         char c = input[ix];
         //여기서 객체 생성
         cmdPtr = makeCommand(c);
-        queue.Enqueue(cmdPtr);
+
+        if (cmdPtr == nullptr)
+        {
+            MessageBoxA(nullptr, "Unknown Command", "menu error", MB_OK);
+            std::cout << "unknown command.\n";
+        }
+        else
+            queue.Enqueue(cmdPtr);
+
     }
 
     //큐에서 꺼내서 실행하고, undo에 기록
     while (!queue.IsEmpty())
     {
-        //todo:null인 경우에 처리
         if (queue.Dequeue(cmdPtr) == true)
         {
             cmdPtr->Execute();
             undoStack.Push(cmdPtr);
         }
     }
-    //todo: redo 초기화하기
 
+    while (!redoStack.IsEmpty())
+    {
+        ICommand* ptr = nullptr;
+        redoStack.Pop(ptr);
+    }
 }
 
 ICommand* makeCommand(char command)
@@ -127,4 +137,13 @@ void show(Stack<ICommand*>& undoStack, Stack<ICommand*>& redoStack)
     std::cout << "redo stack : ";
     redoStack.Print();  
     std::cout << "\n";
+}
+
+//todo: 메모리 삭제 구현
+void clear(Queue<ICommand*>& queue, Stack<ICommand*>& undoStack, Stack<ICommand*>& redoStack)
+{
+    //ICommand* p = nullptr;
+    //while (!queue.Dequeue(p)) { delete p; }
+    //while (!undoStack.Pop(p)) { delete p; }
+    //while (!redoStack.Pop(p)) { delete p; }
 }
