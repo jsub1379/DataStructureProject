@@ -3,8 +3,8 @@
 
 #include <iostream>
 #include <Windows.h>
-template <typename T>
 
+template <typename T>
 class Stack
 {
 public:
@@ -51,7 +51,6 @@ public:
 		}
 		else
 		{
-			//todo:여기도 반환값 오류
 			MessageBoxA(nullptr, "Stack is empty", "Pop error", MB_OK);
 			std::cout << "pop error\n";
 			return false;

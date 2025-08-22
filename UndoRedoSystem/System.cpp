@@ -5,7 +5,9 @@
 #include <iostream>
 #include <cstring>
 
-bool mainMenu(Queue<char>& queue, Stack<char>& undoStack, Stack<char>& redoStack) {
+
+
+bool mainMenu(Queue<ICommand*>& queue, Stack<ICommand*>& undoStack, Stack<ICommand*>& redoStack) {
     char selectedMenu;
     std::cout << "input(i)/undo(u)/redo(r)/show(s)/종료는 아무 키\n";
     std::cin >> selectedMenu;
@@ -35,66 +37,94 @@ bool mainMenu(Queue<char>& queue, Stack<char>& undoStack, Stack<char>& redoStack
     }
 }
 
-void input(Queue<char>& queue, Stack<char>& undoStack)
+//todo: 만약 중간에 새로 입력한 경우는?
+
+void input(Queue<ICommand*>& queue, Stack<ICommand*>& undoStack)
 {
     char input[100];
-	std::cin >> input;
+    std::cin >> input;
+    ICommand* cmdPtr = nullptr;
 
+    //받은 입력으로 객체 생성해서 큐에 넣음
     for (int ix = 0; ix < strlen(input); ix++)
     {
         char c = input[ix];
-        queue.Enqueue(c);
+        //여기서 객체 생성
+        cmdPtr = makeCommand(c);
+        queue.Enqueue(cmdPtr);
     }
 
+    //큐에서 꺼내서 실행하고, undo에 기록
     while (!queue.IsEmpty())
     {
-        char data;
-        if (queue.Dequeue(data) == true)
-            undoStack.Push(data);
+        //todo:null인 경우에 처리
+        if (queue.Dequeue(cmdPtr) == true)
+        {
+            cmdPtr->Execute();
+            undoStack.Push(cmdPtr);
+        }
+    }
+    //todo: redo 초기화하기
+
+}
+
+ICommand* makeCommand(char command)
+{
+    switch (command)
+    {
+    case 'a':
+        return new CommandA();
+
+    case 'b':
+        return new CommandB();
+
+    case 'c':
+        return new CommandC();
+
+    case 'd':
+        return new CommandD();
+
+    case 'e':
+        return new CommandE();
+
+    default:
+        return nullptr;
     }
 
-    std::cout << "job : ";
-    undoStack.Print();
-    std::cout << "\n";
 
 }
 
-void undo(Stack<char>& undoStack, Stack<char>& redoStack)
+
+void undo(Stack<ICommand*>& undoStack, Stack<ICommand*>& redoStack)
 {
-    char data;
-    if (undoStack.Pop(data) == true)
-        redoStack.Push(data);
-    std::cout << "undo\n";
-    std::cout << "job : ";
-    undoStack.Print();
-    std::cout << "\n";
+    ICommand* cmdPtr;
+    if (undoStack.Pop(cmdPtr) == true)
+    {
+        cmdPtr->Undo();
+        redoStack.Push(cmdPtr);
+    }
+
 }
 
-void redo(Stack<char>& undoStack, Stack<char>& redoStack)
+void redo(Stack<ICommand*>& undoStack, Stack<ICommand*>& redoStack)
 {
-    char data;
-    if (redoStack.Pop(data) == true)
-        undoStack.Push(data);
-    std::cout << "redo\n";
-    std::cout << "job : ";
-    undoStack.Print();
-    std::cout << "\n";
+    ICommand* cmdPtr;
+    if (redoStack.Pop(cmdPtr) == true)
+    {
+        cmdPtr->Execute();
+        undoStack.Push(cmdPtr);
+    }
+
 }
 
-void show(Stack<char>& undoStack, Stack<char>& redoStack)
+
+void show(Stack<ICommand*>& undoStack, Stack<ICommand*>& redoStack)
 {
     std::cout << "undo stack : ";
-    while (!undoStack.IsEmpty())
-    {
-        undoStack.Print();
-    }
-
+    undoStack.Print();  
     std::cout << "\n";
 
     std::cout << "redo stack : ";
-    while (!redoStack.IsEmpty())
-    {
-        redoStack.Print();
-    }
-
+    redoStack.Print();  
+    std::cout << "\n";
 }

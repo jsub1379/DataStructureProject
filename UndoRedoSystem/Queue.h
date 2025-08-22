@@ -52,7 +52,6 @@ public:
 		}
 		else
 		{
-			//todo:반환값이 없음
 			MessageBoxA(nullptr, "Queue is empty", "dequeue Error", MB_OK);
 			std::cout << "enqueue error\n";
 			return false;
@@ -60,16 +59,16 @@ public:
 
 	}
 
-	void Print()
-	{
-		for (int ix = 0; ix < rear; ix++)
-		{
-			std::cout << data[ix] << " ";
-		}
-	}
+	//void Print()
+	//{
+	//	for (int ix = 0; ix < rear; ix++)
+	//	{
+	//		std::cout << data[ix] << " ";
+	//	}
+	//}
 
 private:
 	T data[dataCount] = {};
-	int front = 1;//첫번째 칸 비웠으므로 1부터 시작
-	int rear = 1; //마지막 다음 칸
+	int front = 0;//첫번째 칸 비웠으므로 1부터 시작
+	int rear = 0; //마지막 다음 칸
 };
